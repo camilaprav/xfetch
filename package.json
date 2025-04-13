@@ -1,6 +1,6 @@
 {
   "name": "@camilaprav/xfetch",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Drop-in wrapper for native fetch with smart defaults and powerful middleware support.",
   "browser": "xfetch.js",
   "author": "Camila Prá",

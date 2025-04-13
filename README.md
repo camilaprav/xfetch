@@ -23,7 +23,7 @@ It can also serve as a lightweight alternative to libraries like Axios when you 
 ## 🚀 Quick Start
 
 ```js
-import xfetch from './xfetch.js';
+import xfetch from 'https://esm.sh/@camilaprav/xfetch';
 
 // Register middleware before making requests
 xfetch.middlewares.push(async (req, res, next) => {
@@ -35,6 +35,7 @@ const res = await xfetch('/api/user', {
   query: { id: 123 },
   body: { name: 'Alice' },
 });
+
 const data = await res.json();
 ```
 
