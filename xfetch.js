@@ -82,8 +82,6 @@ function createReqObject({ input, init, url, method, headers }) {
     headers: Object.fromEntries(headers.entries()),
     query,
     body: parseBody(body, headers),
-    raw: { input, init },
-    _rawBody: body,
   };
 
   req.query = Object.fromEntries(url.searchParams.entries());

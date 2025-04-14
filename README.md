@@ -54,7 +54,7 @@ xfetch.middlewares.push((req, res, next) => {
 ```
 
 `req` includes:
-- `method`, `url`, `protocol`, `headers`, `query`, `body`, `raw`
+- `method`, `url`, `protocol`, `headers`, `query`, `body`
 
 `res` includes:
 - `status()`, `setHeader()`, `getHeader()`, `json()`, `send()`, `write()`, `end()`
