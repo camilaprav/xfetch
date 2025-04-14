@@ -62,11 +62,11 @@ function extractProtocol(url) {
 
 function createReqObject({ input, init, url, method, headers }) {
   let query = Object.fromEntries(url.searchParams.entries());
-
   let body = init.body;
+
   if (
+    body != null &&
     typeof body === 'object' &&
-    body !== null &&
     !(body instanceof FormData)
   ) {
     body = JSON.stringify(body);
