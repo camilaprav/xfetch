@@ -2,7 +2,7 @@
 
 **xfetch** is a drop-in wrapper for native `fetch` with smart defaults and powerful middleware support. It offers a modern, ergonomic API that improves day-to-day fetch usage and supports full control over request/response flow.
 
-It can also serve as a lightweight alternative to libraries like Axios when you need middleware-style interceptors without the extra overhead.
+It can also serve as a lightweight alternative to libraries like Axios when you need Express-like middleware-style interceptors without the extra overhead.
 
 ---
 
@@ -16,7 +16,7 @@ It can also serve as a lightweight alternative to libraries like Axios when you 
 - **Middleware System**
   - Express-style interceptors for request/response lifecycle control.
   - Easily inject headers, log requests, or short-circuit with mock responses.
-  - Middleware logic can run isomorphically in browser and Node.
+  - Middleware logic can run isomorphically in browser and Node/Express.
 
 ---
 
@@ -43,7 +43,7 @@ const data = await res.json();
 
 ## 🧩 Middleware API
 
-Middlewares receive three arguments: `req`, `res`, and `next()`.
+Middlewares receive three arguments: `req`, `res`, and `next`.
 They can modify the request, send a response early, or allow the request to proceed.
 
 ```js
@@ -54,10 +54,10 @@ xfetch.middlewares.push((req, res, next) => {
 ```
 
 `req` includes:
-- `method`, `url`, `query`, `headers`, `body`, `protocol`
+- `method`, `url`, `protocol`, `headers`, `query`, `body`, `raw`
 
 `res` includes:
-- `status()`, `setHeader()`, `getHeader()`, `send()`, `json()`, `end()`
+- `status()`, `setHeader()`, `getHeader()`, `json()`, `send()`, `write()`, `end()`
 
 ---
 
@@ -66,7 +66,7 @@ xfetch.middlewares.push((req, res, next) => {
 - You want better defaults than native `fetch`.
 - You want a lightweight alternative to Axios-style interceptors.
 - You want to simulate or mock APIs during local development.
-- You want to share middleware logic between client and server (e.g. with Express).
+- You want to share middleware logic between client and server (with Express).
 
 ---
 
