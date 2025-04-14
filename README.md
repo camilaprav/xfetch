@@ -14,7 +14,7 @@ It can also serve as a lightweight alternative to libraries like Axios when you 
   - Built-in support for query parameters via `init.query` (objects are serialized and appended to the URL using `query-string`).
 
 - **Middleware System**
-  - Express-style interceptors for request/response lifecycle control.
+  - Express-style interceptor middlewares for request/response lifecycle control.
   - Easily inject headers, log requests, or short-circuit with mock responses.
   - Middleware logic can run isomorphically in browser and Node/Express.
 
