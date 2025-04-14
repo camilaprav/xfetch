@@ -22,6 +22,27 @@ let xfetch = async (input, init = {}) => {
   let url = typeof input === 'string' ? input : input.url;
   let headers = new Headers(init.headers || {});
   let method = (init.method || (init.body ? 'POST' : 'GET')).toUpperCase();
+  let body = init.body;
+
+  if (body != null) {
+    if (body instanceof URLSearchParams) {
+      if (!headers.has('Content-Type')) {
+        headers.set(
+          'Content-Type',
+          'application/x-www-form-urlencoded;charset=UTF-8',
+        );
+      }
+    } else if (
+      typeof body === 'object' &&
+      !(body instanceof Blob) &&
+      !(body instanceof FormData)
+    ) {
+      if (!headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json');
+      }
+      body = JSON.stringify(body);
+    }
+  }
 
   let finalUrl = appendQueryParams(url, init.query);
   let parsedUrl = new URL(finalUrl, 'http://default');
@@ -34,20 +55,18 @@ let xfetch = async (input, init = {}) => {
     url: parsedUrl,
     method,
     headers,
+    body,
   });
 
   let res = createResObject();
 
   await runMiddlewares(req, res);
-
   return res._sent
     ? res.response
-    : fetch(finalUrl, { ...init, method, headers, body: req._rawBody });
+    : fetch(finalUrl, { ...init, method, headers, body });
 };
 
 xfetch.middlewares = [];
-
-export default xfetch;
 
 function appendQueryParams(url, query) {
   if (!query) return url;
@@ -60,20 +79,8 @@ function extractProtocol(url) {
   return match?.[1];
 }
 
-function createReqObject({ input, init, url, method, headers }) {
+function createReqObject({ input, init, url, method, headers, body }) {
   let query = Object.fromEntries(url.searchParams.entries());
-  let body = init.body;
-
-  if (
-    body != null &&
-    typeof body === 'object' &&
-    !(body instanceof FormData)
-  ) {
-    body = JSON.stringify(body);
-    if (!headers.has('Content-Type')) {
-      headers.set('Content-Type', 'application/json');
-    }
-  }
 
   let req = {
     method,
@@ -84,21 +91,24 @@ function createReqObject({ input, init, url, method, headers }) {
     body: parseBody(body, headers),
   };
 
-  req.query = Object.fromEntries(url.searchParams.entries());
-  req.url = url.pathname + url.search;
-
   return req;
 }
 
 function parseBody(body, headers) {
-  let isJSON = headers.get('Content-Type') === 'application/json';
-  if (!body || !isJSON) return body;
+  let type = headers.get('Content-Type');
+  if (!body || !type) return body;
 
-  try {
-    return JSON.parse(body);
-  } catch {
-    return body;
+  if (type.includes('application/json')) {
+    try {
+      return JSON.parse(body);
+    } catch {
+      return body;
+    }
+  } else if (type.includes('application/x-www-form-urlencoded')) {
+    return Object.fromEntries(new URLSearchParams(body));
   }
+
+  return body;
 }
 
 function createResObject() {
@@ -183,3 +193,5 @@ async function runMiddlewares(req, res) {
 
   await next();
 }
+
+export default xfetch;
