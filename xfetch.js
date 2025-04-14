@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import qs from 'https://esm.sh/query-string@9.1.1';
+import qs from 'https://esm.sh/qs@6.14.0';
 
 let xfetch = async (input, init = {}) => {
   let url = typeof input === 'string' ? input : input.url;
@@ -80,7 +80,11 @@ function extractProtocol(url) {
 }
 
 function createReqObject({ input, init, url, method, headers, body }) {
-  let query = Object.fromEntries(url.searchParams.entries());
+  let query = JSON.parse(
+    JSON.stringify(qs.parse(url.search.slice(1)), (k, v) =>
+      /^\d+$/.test(v) ? Number(v) : v,
+    ),
+  );
 
   let req = {
     method,
